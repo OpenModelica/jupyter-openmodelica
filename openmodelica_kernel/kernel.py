@@ -54,7 +54,7 @@ def plotgraph(plotvar,divid,omc,resultfile):
                shutil.copy2(dygraphfile,os.getcwd())
                #print 'copied file'
              except Exception as e:
-               print e
+               print (e)
          else:
              try:
                sitepath=site.getsitepackages()[0]
@@ -62,7 +62,7 @@ def plotgraph(plotvar,divid,omc,resultfile):
                shutil.copy2(dygraphfile,os.getcwd())
                #print 'copied file'
              except Exception as e:
-               print e               
+               print (e)
      try:
        divheader=" ".join(['<div id='+str(divid)+'>','</div>'])
        readResult = omc.sendExpression("readSimulationResult(\"" + resultfile + "\",{time," + plotvar + "})")
@@ -76,32 +76,32 @@ def plotgraph(plotvar,divid,omc,resultfile):
        for z in xrange(len(plotvalsplit)):
            val= plotvalsplit[z].replace('$#',',')
            plotlabels.append(val)
-       #print plotlabels  
+       #print plotlabels
        plotlabel1=[x.encode('UTF8') for x in plotlabels]
-       
+
        plots=[]
-       for i in xrange(len(readResult)):   
+       for i in xrange(len(readResult)):
          x=readResult[i]
          d=[]
          for z in xrange(len(x)):
             tu=x[z]
             d.append((tu,))
-         plots.append(d)            
+         plots.append(d)
        n=numpy.array(plots)
        numpy.set_printoptions(threshold='nan')
        dygraph_array= repr(numpy.hstack(n)).replace('array',' ').replace('(' ,' ').replace(')' ,' ')
        dygraphoptions=" ".join(['{', 'legend:"always",','labels:',str(plotlabel1),'}'])
-       data="".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById('+'"'+str(divid)+'"'+'),',str(dygraph_array),',',dygraphoptions,')','</script>']) 
+       data="".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById('+'"'+str(divid)+'"'+'),',str(dygraph_array),',',dygraphoptions,')','</script>'])
        htmlhead='''<html> <head> <script src="dygraph-combined.js"> </script> </head>'''
        divcontent="\n".join([htmlhead,divheader,str(data)])
      except:
        error=omc.sendExpression("getErrorString()")
        divcontent="".join(['<p>',error,'</p>'])
-      
+
   else:
      divcontent="".join(['<p>','No result File Generated','</p>'])
-  
-  return divcontent   
+
+  return divcontent
 
 class OpenModelicaKernel(Kernel):
     implementation = 'openmodelica_kernel'
@@ -114,32 +114,32 @@ class OpenModelicaKernel(Kernel):
         'mimetype': 'text/modelica',
     }
     banner = "openmodelicakernel - for evaluating modelica codes in jupyter notebook"
-    
+
     def __init__(self, **kwargs):
        Kernel.__init__(self, **kwargs)
        self.omc=OMCSession()
        self.matfile=None
-       
+
     def do_execute(self, code, silent, store_history=True, user_expressions=None,
                    allow_stdin=True):
         #print code
-        
+
         z1 = filter(lambda x: not re.match(r'^\s*$', x), code)
         plotcommand=z1.replace(' ','').startswith('plot(')and z1.replace(' ','').endswith(')')
- 
+
         #print self.execution_count
-        
-        if (plotcommand==True):   
+
+        if (plotcommand==True):
           l1=z1.replace(' ','')
           l=l1[0:-1]
           plotvar=l[5:].replace('{','').replace('}','')
           plotdivid=str(self.execution_count)
           finaldata=plotgraph(plotvar,plotdivid,self.omc,self.matfile)
-          
-          if not silent: 
-                '''        
+
+          if not silent:
+                '''
                 stream_content = {'name': 'stdout','text':ouptut}
-                self.send_response(self.iopub_socket, 'stream', stream_content) '''                           
+                self.send_response(self.iopub_socket, 'stream', stream_content) '''
                 display_content = {'source': 'kernel',
                     'data': { 'text/html': finaldata
                     }
@@ -155,15 +155,15 @@ class OpenModelicaKernel(Kernel):
 
                 except:
                    val=self.omc.sendExpression(code,parsed=False)
-               
+
                 #print self.matfile
-                if not silent: 
+                if not silent:
                     display_content = {'source': 'kernel',
                         'data': { 'text/plain': str(val)
                         }
                     }
                     self.send_response(self.iopub_socket, 'display_data', display_content)
-           
+
         return {'status': 'ok',
                 # The base class increments the execution count
                 'execution_count': self.execution_count,
@@ -174,13 +174,13 @@ class OpenModelicaKernel(Kernel):
             try:
                 self.omc.__del__()
             except:
-                pass            
+                pass
 '''
 if __name__ == '__main__':
     try:
        from ipykernel.kernelapp import IPKernelApp
     except ImportError:
        from IPython.kernel.zmq.kernelapp import IPKernelApp
-    
+
     IPKernelApp.launch_instance(kernel_class=OpenModelicaKernel)'''
 
