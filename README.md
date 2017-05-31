@@ -3,7 +3,8 @@ An OpenModelica Kernel for Jupyter Notebook.
 All commands are interpreted by OMPython which communicates with OpenModelica Compiler and the result is presented to user.
 
 This requires [Jupyter Notebook](https://jupyter.readthedocs.org/en/latest/install.html), [OpenModelica](https://openmodelica.org), and [OMPython](https://github.com/OpenModelica/OMPython) to be installed.  
-Make sure the environment variable for OpenModelica is set e.g.: `OPENMODELICAHOME=C:/OpenModelica1.11.0-64bit/` or similar.  
+Make sure the environment variable for OpenModelica is set e.g.:  
+`OPENMODELICAHOME=C:/OpenModelica1.11.0-64bit/` or similar.  
 
 To install:
 
