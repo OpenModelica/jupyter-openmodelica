@@ -31,7 +31,7 @@ __license__ = """
 """
 
 from ipykernel.kernelbase import Kernel
-from OMPython import OMCSession
+from OMPython import OMCSessionZMQ
 import re
 import numpy
 from numpy import array
@@ -117,7 +117,7 @@ class OpenModelicaKernel(Kernel):
 
     def __init__(self, **kwargs):
        Kernel.__init__(self, **kwargs)
-       self.omc=OMCSession()
+       self.omc=OMCSessionZMQ()
        self.matfile=None
 
     def do_execute(self, code, silent, store_history=True, user_expressions=None,

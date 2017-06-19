@@ -9,7 +9,7 @@ Make sure the environment variable for OpenModelica is set e.g.:
 To install:
 
      1) clone the project
-     2) cd Jupyter_OpenModelica_Kernel
+     2) cd jupyter-openmodelica
      3) python setup.py install
 
 To use it, run:
