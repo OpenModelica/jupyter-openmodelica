@@ -39,14 +39,10 @@ import sys
 #reload(sys)
 try:
     reload(sys)  # Python 2.7
-except NameError:
-    try:
-        from importlib import reload  # Python 3.4+
-        reload(sys)
-    except ImportError:
-        from imp import reload  # Python 3.0 - 3.3
-        reload(sys)
-sys.setdefaultencoding("utf-8")
+    sys.setdefaultencoding("utf-8")
+except NameError as e:
+    print (e)
+    
 import os
 import re
 import shutil
@@ -82,22 +78,22 @@ def plotgraph(plotvar,divid,omc,resultfile):
        subexp=re.sub(exp,'$#',plotvar)
        plotvalsplit=subexp.split(',')
        #print plotvalsplit
-       for z in xrange(len(plotvalsplit)):
+       for z in range(len(plotvalsplit)):
            val= plotvalsplit[z].replace('$#',',')
            plotlabels.append(val)
-       #print plotlabels
-       plotlabel1=[x.encode('UTF8') for x in plotlabels]
-
+       
+       plotlabel1=[str(x) for x in plotlabels]
+       
        plots=[]
-       for i in xrange(len(readResult)):
+       for i in range(len(readResult)):
          x=readResult[i]
          d=[]
-         for z in xrange(len(x)):
+         for z in range(len(x)):
             tu=x[z]
             d.append((tu,))
          plots.append(d)
        n=numpy.array(plots)
-       numpy.set_printoptions(threshold='nan')
+       numpy.set_printoptions(threshold=numpy.nan)
        dygraph_array= repr(numpy.hstack(n)).replace('array',' ').replace('(' ,' ').replace(')' ,' ')
        dygraphoptions=" ".join(['{', 'legend:"always",','labels:',str(plotlabel1),'}'])
        data="".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById('+'"'+str(divid)+'"'+'),',str(dygraph_array),',',dygraphoptions,')','</script>'])
@@ -133,7 +129,7 @@ class OpenModelicaKernel(Kernel):
                    allow_stdin=True):
         #print code
 
-        z1 = filter(lambda x: not re.match(r'^\s*$', x), code)
+        z1 ="".join(filter(lambda x: not re.match(r'^\s*$', x), code))
         plotcommand=z1.replace(' ','').startswith('plot(')and z1.replace(' ','').endswith(')')
 
         #print self.execution_count
