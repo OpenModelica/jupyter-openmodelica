@@ -50,7 +50,7 @@ import site
 
 
 def plotgraph(plotvar, divid, omc, resultfile):
-    if (resultfile != None):
+    if (resultfile is not None):
         checkdygraph = os.path.join(os.getcwd(), 'dygraph-combined.js')
         if not os.path.exists(checkdygraph):
             if (sys.platform == 'win32'):
@@ -100,7 +100,7 @@ def plotgraph(plotvar, divid, omc, resultfile):
             data = "".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById(' + '"' + str(divid) + '"' + '),', str(dygraph_array), ',', dygraphoptions, ')', '</script>'])
             htmlhead = '''<html> <head> <script src="dygraph-combined.js"> </script> </head>'''
             divcontent = "\n".join([htmlhead, divheader, str(data)])
-        except:
+        except BaseException:
             error = omc.sendExpression("getErrorString()")
             divcontent = "".join(['<p>', error, '</p>'])
 
@@ -136,7 +136,7 @@ class OpenModelicaKernel(Kernel):
 
         # print self.execution_count
 
-        if (plotcommand == True):
+        if (plotcommand):
             l1 = z1.replace(' ', '')
             l = l1[0:-1]
             plotvar = l[5:].replace('{', '').replace('}', '')
@@ -157,10 +157,10 @@ class OpenModelicaKernel(Kernel):
                 val = self.omc.sendExpression(code)
                 try:
                     self.matfile = val['resultFile']
-                except:
+                except BaseException:
                     pass
 
-            except:
+            except BaseException:
                 val = self.omc.sendExpression(code, parsed=False)
 
             # print self.matfile
@@ -181,7 +181,7 @@ class OpenModelicaKernel(Kernel):
     def do_shutdown(self, restart):
         try:
             self.omc.__del__()
-        except:
+        except BaseException:
             pass
 
 
