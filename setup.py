@@ -7,7 +7,7 @@ import sys
 kernel_json = {"argv": [sys.executable, "-m", "openmodelica_kernel", "-f", "{connection_file}"],
                "display_name": "OpenModelica",
                "language": "OpenModelica"
-               }
+              }
 
 
 class install_with_kernelspec(install):
@@ -45,6 +45,5 @@ setup(name="openmodelica_kernel",
       install_requires=[
           # 'OpenModelica', # Required, but not part of pypi
           'numpy',
-          'OMPython'
-]
-      )
+          'OMPython']
+     )
