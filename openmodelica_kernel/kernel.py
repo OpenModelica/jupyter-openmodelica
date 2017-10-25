@@ -36,77 +36,79 @@ import re
 import numpy
 from numpy import array
 import sys
-#reload(sys)
+# reload(sys)
 try:
     reload(sys)  # Python 2.7
     sys.setdefaultencoding("utf-8")
 except NameError as e:
-    print (e)
-    
+    print(e)
+
 import os
 import re
 import shutil
 import site
 
-def plotgraph(plotvar,divid,omc,resultfile):
-  if (resultfile!=None):
-     checkdygraph=os.path.join(os.getcwd(),'dygraph-combined.js')
-     if not os.path.exists(checkdygraph):
-         if (sys.platform=='win32'):
-             try:
-               sitepath=site.getsitepackages()[1]
-               dygraphfile=os.path.join(sitepath,'openmodelica_kernel','dygraph-combined.js').replace('\\','/')
-               shutil.copy2(dygraphfile,os.getcwd())
-               #print 'copied file'
-             except Exception as e:
-               print (e)
-         else:
-             try:
-               sitepath=site.getsitepackages()[0]
-               dygraphfile=os.path.join(sitepath,'openmodelica_kernel','dygraph-combined.js').replace('\\','/')
-               shutil.copy2(dygraphfile,os.getcwd())
-               #print 'copied file'
-             except Exception as e:
-               print (e)
-     try:
-       divheader=" ".join(['<div id='+str(divid)+'>','</div>'])
-       readResult = omc.sendExpression("readSimulationResult(\"" + resultfile + "\",{time," + plotvar + "})")
-       omc.sendExpression("closeSimulationResultFile()")
-       plotlabels=['Time']
-       exp='(\s?,\s?)(?=[^\[]*\])|(\s?,\s?)(?=[^\(]*\))'
-       #print 'inside_plot1'
-       subexp=re.sub(exp,'$#',plotvar)
-       plotvalsplit=subexp.split(',')
-       #print plotvalsplit
-       for z in range(len(plotvalsplit)):
-           val= plotvalsplit[z].replace('$#',',')
-           plotlabels.append(val)
-       
-       plotlabel1=[str(x) for x in plotlabels]
-       
-       plots=[]
-       for i in range(len(readResult)):
-         x=readResult[i]
-         d=[]
-         for z in range(len(x)):
-            tu=x[z]
-            d.append((tu,))
-         plots.append(d)
-       n=numpy.array(plots)
-       numpy.set_printoptions(threshold=numpy.nan)
-       dygraph_array= repr(numpy.hstack(n)).replace('array',' ').replace('(' ,' ').replace(')' ,' ')
-       dygraphoptions=" ".join(['{', 'legend:"always",','labels:',str(plotlabel1),'}'])
-       data="".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById('+'"'+str(divid)+'"'+'),',str(dygraph_array),',',dygraphoptions,')','</script>'])
-       htmlhead='''<html> <head> <script src="dygraph-combined.js"> </script> </head>'''
-       divcontent="\n".join([htmlhead,divheader,str(data)])
-     except:
-       error=omc.sendExpression("getErrorString()")
-       divcontent="".join(['<p>',error,'</p>'])
 
-  else:
-     divcontent="".join(['<p>','No result File Generated','</p>'])
+def plotgraph(plotvar, divid, omc, resultfile):
+    if (resultfile != None):
+        checkdygraph = os.path.join(os.getcwd(), 'dygraph-combined.js')
+        if not os.path.exists(checkdygraph):
+            if (sys.platform == 'win32'):
+                try:
+                    sitepath = site.getsitepackages()[1]
+                    dygraphfile = os.path.join(sitepath, 'openmodelica_kernel', 'dygraph-combined.js').replace('\\', '/')
+                    shutil.copy2(dygraphfile, os.getcwd())
+                    # print 'copied file'
+                except Exception as e:
+                    print(e)
+            else:
+                try:
+                    sitepath = site.getsitepackages()[0]
+                    dygraphfile = os.path.join(sitepath, 'openmodelica_kernel', 'dygraph-combined.js').replace('\\', '/')
+                    shutil.copy2(dygraphfile, os.getcwd())
+                    # print 'copied file'
+                except Exception as e:
+                    print(e)
+        try:
+            divheader = " ".join(['<div id=' + str(divid) + '>', '</div>'])
+            readResult = omc.sendExpression("readSimulationResult(\"" + resultfile + "\",{time," + plotvar + "})")
+            omc.sendExpression("closeSimulationResultFile()")
+            plotlabels = ['Time']
+            exp = '(\s?,\s?)(?=[^\[]*\])|(\s?,\s?)(?=[^\(]*\))'
+            # print 'inside_plot1'
+            subexp = re.sub(exp, '$#', plotvar)
+            plotvalsplit = subexp.split(',')
+            # print plotvalsplit
+            for z in range(len(plotvalsplit)):
+                val = plotvalsplit[z].replace('$#', ',')
+                plotlabels.append(val)
 
-  return divcontent
+            plotlabel1 = [str(x) for x in plotlabels]
+
+            plots = []
+            for i in range(len(readResult)):
+                x = readResult[i]
+                d = []
+                for z in range(len(x)):
+                    tu = x[z]
+                    d.append((tu,))
+                plots.append(d)
+            n = numpy.array(plots)
+            numpy.set_printoptions(threshold=numpy.nan)
+            dygraph_array = repr(numpy.hstack(n)).replace('array', ' ').replace('(', ' ').replace(')', ' ')
+            dygraphoptions = " ".join(['{', 'legend:"always",', 'labels:', str(plotlabel1), '}'])
+            data = "".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById(' + '"' + str(divid) + '"' + '),', str(dygraph_array), ',', dygraphoptions, ')', '</script>'])
+            htmlhead = '''<html> <head> <script src="dygraph-combined.js"> </script> </head>'''
+            divcontent = "\n".join([htmlhead, divheader, str(data)])
+        except:
+            error = omc.sendExpression("getErrorString()")
+            divcontent = "".join(['<p>', error, '</p>'])
+
+    else:
+        divcontent = "".join(['<p>', 'No result File Generated', '</p>'])
+
+    return divcontent
+
 
 class OpenModelicaKernel(Kernel):
     implementation = 'openmodelica_kernel'
@@ -121,65 +123,68 @@ class OpenModelicaKernel(Kernel):
     banner = "openmodelicakernel - for evaluating modelica codes in jupyter notebook"
 
     def __init__(self, **kwargs):
-       Kernel.__init__(self, **kwargs)
-       self.omc=OMCSessionZMQ()
-       self.matfile=None
+        Kernel.__init__(self, **kwargs)
+        self.omc = OMCSessionZMQ()
+        self.matfile = None
 
     def do_execute(self, code, silent, store_history=True, user_expressions=None,
                    allow_stdin=True):
-        #print code
+        # print code
 
-        z1 ="".join(filter(lambda x: not re.match(r'^\s*$', x), code))
-        plotcommand=z1.replace(' ','').startswith('plot(')and z1.replace(' ','').endswith(')')
+        z1 = "".join(filter(lambda x: not re.match(r'^\s*$', x), code))
+        plotcommand = z1.replace(' ', '').startswith('plot(')and z1.replace(' ', '').endswith(')')
 
-        #print self.execution_count
+        # print self.execution_count
 
-        if (plotcommand==True):
-          l1=z1.replace(' ','')
-          l=l1[0:-1]
-          plotvar=l[5:].replace('{','').replace('}','')
-          plotdivid=str(self.execution_count)
-          finaldata=plotgraph(plotvar,plotdivid,self.omc,self.matfile)
+        if (plotcommand == True):
+            l1 = z1.replace(' ', '')
+            l = l1[0:-1]
+            plotvar = l[5:].replace('{', '').replace('}', '')
+            plotdivid = str(self.execution_count)
+            finaldata = plotgraph(plotvar, plotdivid, self.omc, self.matfile)
 
-          if not silent:
+            if not silent:
                 '''
                 stream_content = {'name': 'stdout','text':ouptut}
                 self.send_response(self.iopub_socket, 'stream', stream_content) '''
                 display_content = {'source': 'kernel',
-                    'data': { 'text/html': finaldata
-                    }
-                }
+                                   'data': {'text/html': finaldata
+                                            }
+                                   }
                 self.send_response(self.iopub_socket, 'display_data', display_content)
         else:
+            try:
+                val = self.omc.sendExpression(code)
                 try:
-                   val=self.omc.sendExpression(code)
-                   try:
-                      self.matfile=val['resultFile']
-                   except:
-                      pass
-
+                    self.matfile = val['resultFile']
                 except:
-                   val=self.omc.sendExpression(code,parsed=False)
+                    pass
 
-                #print self.matfile
-                if not silent:
-                    display_content = {'source': 'kernel',
-                        'data': { 'text/plain': str(val)
-                        }
-                    }
-                    self.send_response(self.iopub_socket, 'display_data', display_content)
+            except:
+                val = self.omc.sendExpression(code, parsed=False)
+
+            # print self.matfile
+            if not silent:
+                display_content = {'source': 'kernel',
+                                   'data': {'text/plain': str(val)
+                                            }
+                                   }
+                self.send_response(self.iopub_socket, 'display_data', display_content)
 
         return {'status': 'ok',
                 # The base class increments the execution count
                 'execution_count': self.execution_count,
                 'payload': [],
                 'user_expressions': {},
-               }
+                }
+
     def do_shutdown(self, restart):
-            try:
-                self.omc.__del__()
-            except:
-                pass
+        try:
+            self.omc.__del__()
+        except:
+            pass
+
+
 '''
 if __name__ == '__main__':
     try:
@@ -188,4 +193,3 @@ if __name__ == '__main__':
        from IPython.kernel.zmq.kernelapp import IPKernelApp
 
     IPKernelApp.launch_instance(kernel_class=OpenModelicaKernel)'''
-
