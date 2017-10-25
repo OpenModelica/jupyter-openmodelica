@@ -42,4 +42,9 @@ setup(name="openmodelica_kernel",
       packages=["openmodelica_kernel"],
       package_data={'openmodelica_kernel': ['dygraph-combined.js']},
       cmdclass={'install': install_with_kernelspec},
+      install_requires=[
+          # 'OpenModelica', # Required, but not part of pypi
+          'numpy',
+          'OMPython'
+]
       )
