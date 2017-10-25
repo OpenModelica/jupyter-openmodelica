@@ -36,6 +36,7 @@ import re
 import numpy
 from numpy import array
 import sys
+
 # reload(sys)
 try:
     reload(sys)  # Python 2.7
@@ -132,7 +133,7 @@ class OpenModelicaKernel(Kernel):
         # print code
 
         z1 = "".join(filter(lambda x: not re.match(r'^\s*$', x), code))
-        plotcommand = z1.replace(' ', '').startswith('plot(')and z1.replace(' ', '').endswith(')')
+        plotcommand = z1.replace(' ', '').startswith('plot(') and z1.replace(' ', '').endswith(')')
 
         # print self.execution_count
 

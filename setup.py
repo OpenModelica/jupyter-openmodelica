@@ -7,7 +7,7 @@ import sys
 kernel_json = {"argv": [sys.executable, "-m", "openmodelica_kernel", "-f", "{connection_file}"],
                "display_name": "OpenModelica",
                "language": "OpenModelica"
-              }
+               }
 
 
 class install_with_kernelspec(install):
@@ -21,7 +21,7 @@ class install_with_kernelspec(install):
         except ImportError:
             from IPython.kernel.kernelspec import KernelSpecManager
 
-        #from IPython.kernel.kernelspec import KernelSpecManager
+        # from IPython.kernel.kernelspec import KernelSpecManager
         from IPython.utils.path import ensure_dir_exists
         destdir = os.path.join(KernelSpecManager().user_kernel_dir, "OpenModelica")
         ensure_dir_exists(destdir)
@@ -46,4 +46,4 @@ setup(name="openmodelica_kernel",
           # 'OpenModelica', # Required, but not part of pypi
           'numpy',
           'OMPython']
-     )
+      )
