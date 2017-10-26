@@ -44,6 +44,7 @@ setup(name="openmodelica_kernel",
       cmdclass={'install': install_with_kernelspec},
       install_requires=[
           # 'OpenModelica', # Required, but not part of pypi
+          'jupyter',
           'numpy',
           'OMPython']
       )
