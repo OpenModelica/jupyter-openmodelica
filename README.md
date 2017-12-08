@@ -22,3 +22,27 @@ The repository also contains the [example notebook file OpenModelica.ipynb](http
 #### A note about plotting:
 The plotting is done with the help of Dygraph javascript. If plot does not works, make sure 
 the "dygraph-combined.js" is in the current working directory.
+
+# DOCKER JupyterNotebook-OPENMODELICA Kernel
+
+A Docker container to run jupyter-notebook openmodelica Kernel
+
+Requirements
+
+  1. docker, To install docker see https://docs.docker.com/engine/installation/
+
+USAGE
+
+  To build jupyter-openmodelica 
+
+  1. clone the project
+  2. cd jupyter-openmodelica
+  3. docker build -t jupyteropenmodelica . 
+  
+  After building the image jupyteropenmodelica, we are now ready to run the jupyter-openmodelica in docker container
+
+To use it, run:
+
+  docker run -p 8888:8888 jupyteropenmodelica
+   
+
