@@ -117,9 +117,9 @@ class OpenModelicaKernel(Kernel):
     language = 'openmodelica'
     language_version = '1.0'
     language_info = {
-        'name': "openmodelica",
+        'name': "modelica",
         'version': "1.0",
-        'mimetype': 'text/modelica',
+        'mimetype': 'text/x-modelica',
     }
     banner = "openmodelicakernel - for evaluating modelica codes in jupyter notebook"
 
