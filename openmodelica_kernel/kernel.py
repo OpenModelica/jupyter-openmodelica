@@ -37,6 +37,7 @@ import numpy
 from numpy import array
 import sys
 
+
 # reload(sys)
 try:
     reload(sys)  # Python 2.7
@@ -95,12 +96,12 @@ def plotgraph(plotvar, divid, omc, resultfile):
                     d.append((tu,))
                 plots.append(d)
             n = numpy.array(plots)
-            numpy.set_printoptions(threshold=numpy.nan)
+            numpy.set_printoptions(threshold=numpy.inf)
             dygraph_array = repr(numpy.hstack(n)).replace('array', ' ').replace('(', ' ').replace(')', ' ')
             dygraphoptions = " ".join(['{', 'legend:"always",', 'labels:', str(plotlabel1), '}'])
             data = "".join(['<script type="text/javascript"> g = new Dygraph(document.getElementById(' + '"' + str(divid) + '"' + '),', str(dygraph_array), ',', dygraphoptions, ')', '</script>'])
             htmlhead = '''<html> <head> <script src="dygraph-combined.js"> </script> </head>'''
-            divcontent = "\n".join([htmlhead, divheader, str(data)])
+            divcontent = "\n".join([htmlhead, divheader, str(data),'</html>'])
         except BaseException:
             error = omc.sendExpression("getErrorString()")
             divcontent = "".join(['<p>', error, '</p>'])
@@ -134,16 +135,17 @@ class OpenModelicaKernel(Kernel):
 
         z1 = "".join(filter(lambda x: not re.match(r'^\s*$', x), code))
         plotcommand = z1.replace(' ', '').startswith('plot(') and z1.replace(' ', '').endswith(')')
-
+        
         # print self.execution_count
-
         if (plotcommand):
             l1 = z1.replace(' ', '')
             l = l1[0:-1]
             plotvar = l[5:].replace('{', '').replace('}', '')
             plotdivid = str(self.execution_count)
             finaldata = plotgraph(plotvar, plotdivid, self.omc, self.matfile)
-
+            # f = open("demofile.html", "w")
+            # f.write(finaldata)
+            # f.close()
             if not silent:
                 '''
                 stream_content = {'name': 'stdout','text':ouptut}
